@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+/* import { Request, Response } from 'express';
 import UserService from '../services/users.services';
 import statusCode from '../statusCode';
 
@@ -17,4 +17,4 @@ class UsersController {
   }
 }
 
-export default UsersController;
+export default UsersController; */
