@@ -3,7 +3,7 @@ import Product from '../interfaces/products.interface';
 import connection from '../models/connection';  
 import ProductModel from '../models/products.models';
 
-class ProductService {
+export default class ProductService {
   model: ProductModel;
 
   constructor() {
@@ -58,6 +58,9 @@ class ProductService {
     }
     return this.model.create(product);
   }
-}
 
-export default ProductService;
+  async getAll(): Promise<Product[]> {
+    const products = await this.model.getAll();
+    return products;
+  }
+}
