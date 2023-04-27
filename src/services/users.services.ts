@@ -1,5 +1,5 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
-import { BadRequestError, UnauthorizedError } from 'restify-errors';
+import { BadRequestError } from 'restify-errors';
 import User from '../interfaces/users.interface';
 import connection from '../models/connection';
 import UserModel from '../models/users.models';
@@ -41,16 +41,13 @@ export default class UserService {
     if (!user.password) {
       throw new BadRequestError('"password" is required');
     }
-  
-    const isValidUser = await this.model.signin(user);
-    if (!isValidUser) {
+    /*  const isValid = await this.model.signin(user);
+    if (typeof isValid !== 'string') {
       throw new UnauthorizedError('Username or password invalid');
     }
-  
-    const isPasswordValid = await this.model.signin(user);
-    if (!isPasswordValid) {
-      throw new UnauthorizedError('Username or password invalid');
-    }
+    console.log(isValid); */
+
+    await this.model.signin(user);
     const token = jwt.sign(user, secretKey, configJWT);
     return token;
   }
