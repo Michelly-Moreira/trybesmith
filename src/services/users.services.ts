@@ -14,7 +14,7 @@ const secretKey = process.env.JWT_SECRET || 'x';
 
 const configJWT = {
   // eslint-disable-next-line @typescript-eslint/indent
-    expiresIn: '1d', // expira em 1 minuto
+  expiresIn: '1d', // expira em 1 minuto
   algorithm: 'HS256',
 } as SignOptions;
 
