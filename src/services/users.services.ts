@@ -1,12 +1,14 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
+import { BadRequestError, UnauthorizedError } from 'restify-errors';
 import User from '../interfaces/users.interface';
 import connection from '../models/connection';
 import UserModel from '../models/users.models';
 /* import {
-  userNameValidation, vocationValidation, levelValidation, passwordValidation, loginValidation,
+  userNameValidation, passwordValidation,
 } from '../middleware/validation';
+   */
 
-const httpErrGenerator = (status: number, message: string) => ({
+/* const httpErrGenerator = (status: number, message: string) => ({
   status, message,
 }); */
   
@@ -32,7 +34,23 @@ export default class UserService {
   }
 
   async signin(user: User): Promise<string> {
-    await this.model.signin(user); 
+    if (!user.username) {
+      throw new BadRequestError('"username" is required');
+    }
+  
+    if (!user.password) {
+      throw new BadRequestError('"password" is required');
+    }
+  
+    const isValidUser = await this.model.signin(user);
+    if (!isValidUser) {
+      throw new UnauthorizedError('Username or password invalid');
+    }
+  
+    const isPasswordValid = await this.model.signin(user);
+    if (!isPasswordValid) {
+      throw new UnauthorizedError('Username or password invalid');
+    }
     const token = jwt.sign(user, secretKey, configJWT);
     return token;
   }

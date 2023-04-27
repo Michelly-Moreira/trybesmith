@@ -4,7 +4,6 @@ import 'express-async-errors';
 import ProductsRoutes from './routes/products.route';
 import OrdersRoutes from './routes/orders.route';
 import UsersRoutes from './routes/users.route';
-// import errorMiddleware from './middleware/error.handler';
 
 // todas as rotas do projeto são feitas aqui
 const app = express();
@@ -18,7 +17,6 @@ app.get('/', (_req: Request, res: Response) => {
 app.use(ProductsRoutes);
 app.use(OrdersRoutes);
 app.use(UsersRoutes);
-// app.use(errorMiddleware);
 
 // middleware de erro
 /* app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
