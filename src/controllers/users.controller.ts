@@ -1,4 +1,4 @@
-/* import { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import UserService from '../services/users.services';
 import statusCode from '../statusCode';
 
@@ -7,14 +7,20 @@ class UsersController {
 
   constructor(userService = new UserService()) {
     this.userService = userService;
-    this.create = this.create.bind(this);
+    this.createUser = this.createUser.bind(this);
   }
 
-  async create(req: Request, res: Response): Promise<void> {
+  async createUser(req: Request, res: Response): Promise<void> {
     const user = req.body;
-    const userCreated = await this.userService.create(user);
-    res.status(statusCode.CREATED).json(userCreated);
+    await this.userService.createUser(user);
+    res.status(statusCode.CREATED).json({ token: 'token' });
+  }
+
+  async signin(req: Request, res: Response): Promise<void> {
+    const user = req.body;
+    const token = await this.userService.signin(user);
+    res.status(statusCode.OK).json({ token });
   }
 }
 
-export default UsersController; */
+export default UsersController;

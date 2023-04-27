@@ -8,7 +8,7 @@ export default class UserModel {
     this.connection = connection;
   }
 
-  async create(user: User): Promise<User> {
+  async createUser(user: User): Promise<User> {
     const { username, vocation, level, password } = user;
     const result = await this.connection.execute<ResultSetHeader>(
       'INSERT INTO Trybesmith.users (username, vocation, level, password) VALUE (?, ?, ?, ?)',
@@ -18,4 +18,22 @@ export default class UserModel {
     const { insertId } = dataInserted;
     return { id: insertId, ...user };
   }
+
+  async signin(user: User): Promise<User> {
+    const { username, password } = user;
+    const result = await this.connection.execute<ResultSetHeader>(
+      'SELECT * FROM Trybesmith.users WHERE username = ? AND password = ?',
+      [username, password],
+    );
+    const [dataInserted] = result;
+    const { insertId } = dataInserted;
+    return { id: insertId, ...user };
+  }
 }
+
+// select => RowDataPacket[]
+// update => OkPacket
+// delet => OkPacket
+// insert => ResultSetHeader
+
+// [data, buffer] => retorno do execute
