@@ -3,10 +3,6 @@ import { BadRequestError } from 'restify-errors';
 import User from '../interfaces/users.interface';
 import connection from '../models/connection';
 import UserModel from '../models/users.models';
-/* import {
-  userNameValidation, passwordValidation,
-} from '../middleware/validation';
-   */
 
 /* const httpErrGenerator = (status: number, message: string) => ({
   status, message,
@@ -15,8 +11,7 @@ import UserModel from '../models/users.models';
 const secretKey = process.env.JWT_SECRET || 'x';
 
 const configJWT = {
-  // eslint-disable-next-line @typescript-eslint/indent
-  expiresIn: '1d', // expira em 1 minuto
+  expiresIn: '1d', // expira em 1 dia
   algorithm: 'HS256',
 } as SignOptions;
 
@@ -34,18 +29,9 @@ export default class UserService {
   }
 
   async signin(user: User): Promise<string> {
-    if (!user.username) {
-      throw new BadRequestError('"username" is required');
+    if (!user.username || !user.password) {
+      throw new BadRequestError('ANAUTHORIZED');
     }
-  
-    if (!user.password) {
-      throw new BadRequestError('"password" is required');
-    }
-    /*  const isValid = await this.model.signin(user);
-    if (typeof isValid !== 'string') {
-      throw new UnauthorizedError('Username or password invalid');
-    }
-    console.log(isValid); */
 
     await this.model.signin(user);
     const token = jwt.sign(user, secretKey, configJWT);
