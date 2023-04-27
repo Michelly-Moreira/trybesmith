@@ -5,8 +5,8 @@ import UserModel from '../models/users.models';
 /* import {
   userNameValidation, vocationValidation, levelValidation, passwordValidation, loginValidation,
 } from '../middleware/validation';
- */
-/* const httpErrGenerator = (status: number, message: string) => ({
+
+const httpErrGenerator = (status: number, message: string) => ({
   status, message,
 }); */
   
@@ -25,21 +25,14 @@ export default class UserService {
     this.model = new UserModel(connection);
   }
 
-  async createUser(user: User): Promise<User> {
-    if (!user) {
-      throw new Error('UNAUTHORIZED');
-    }
-
-    const users = await this.model.createUser(user);
-    return users;
+  async createUser(user: User): Promise<string> {
+    await this.model.createUser(user);
+    const token = jwt.sign(user, secretKey, configJWT);
+    return token;
   }
 
   async signin(user: User): Promise<string> {
-    const users = await this.model.signin(user);
-
-    if (!users) {
-      throw new Error('UNAUTHORIZED');
-    }
+    await this.model.signin(user); 
     const token = jwt.sign(user, secretKey, configJWT);
     return token;
   }

@@ -12,8 +12,8 @@ class UsersController {
 
   async createUser(req: Request, res: Response): Promise<void> {
     const user = req.body;
-    await this.userService.createUser(user);
-    res.status(statusCode.CREATED).json({ token: 'token' });
+    const token = await this.userService.createUser(user);
+    res.status(statusCode.CREATED).json({ token });
   }
 
   async signin(req: Request, res: Response): Promise<void> {
