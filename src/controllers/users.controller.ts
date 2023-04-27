@@ -10,38 +10,32 @@ class UsersController {
     this.createUser = this.createUser.bind(this);
   }
 
-  async createUser(req: Request, res: Response): Promise<void> {
+  async createUser(req: Request, res: Response): Promise<Response> {
     const user = req.body;
     const token = await this.userService.createUser(user);
-    res.status(statusCode.CREATED).json({ token });
+    return res.status(statusCode.CREATED).json({ token });
   }
 
-/* 
-  async signin(req: Request, res: Response): Promise<void> {
+  async signin(req: Request, res: Response): Promise<Response> {
     const user = req.body;
     if (!user.username) {
-      res.status(statusCode.BAD_REQUEST).json({
+      return res.status(statusCode.BAD_REQUEST).json({
         message: '"username" is required',
       });
     }
     if (!user.password) {
-      res.status(statusCode.BAD_REQUEST).json({
+      return res.status(statusCode.BAD_REQUEST).json({
         message: '"password" is required',
       });
     }
-    if (typeof user.username !== 'string') {
-      res.status(statusCode.UNAUTHORIZED).json({
-        message: 'Username or password invalid',
-      });
-    }
-    if (typeof user.password !== 'string') {
-      res.status(statusCode.UNAUTHORIZED).json({
+    if (typeof user.username !== 'string' || typeof user.password !== 'string') {
+      return res.status(statusCode.UNAUTHORIZED).json({
         message: 'Username or password invalid',
       });
     }
     const token = await this.userService.signin(user);
-    res.status(statusCode.OK).json({ token });
-  } */
+    return res.status(statusCode.OK).json({ token });
+  }
 } 
 
 export default UsersController;
