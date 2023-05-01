@@ -1,11 +1,25 @@
 import { Router } from 'express';
 import UsersController from '../controllers/users.controller';
-import { loginValidation } from '../middleware/validation';
+import {
+  userNameValidation,
+  passwordValidation,
+  vocationValidation,
+  levelValidation,
+  loginValidation,
+} from '../middleware/validation';
 
 const router = Router();
 const usersController = new UsersController();
 
-router.post('/users', (req, res) => usersController.createUser(req, res));
+router
+  .route('/users')
+  .post(
+    userNameValidation,
+    vocationValidation,
+    levelValidation,
+    passwordValidation,
+    usersController.createUser,
+  );
 
 router
   .route('/login')
