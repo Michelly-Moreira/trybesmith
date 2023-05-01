@@ -6,6 +6,7 @@ const router = Router();
 const usersController = new UsersController();
 
 router.post('/users', (req, res) => usersController.createUser(req, res));
+
 router
   .route('/login')
   .post(loginValidation, usersController.signin);
