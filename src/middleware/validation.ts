@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import statusCode from '../statusCode';
 
 const userNameValidation = (req: Request, res: Response, next: NextFunction) => {
   const { username } = req.body;
@@ -85,9 +86,12 @@ const passwordValidation = (req: Request, res: Response, next: NextFunction) => 
 };
 
 const loginValidation = (req: Request, res: Response, next: NextFunction) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(401).json({ message: 'Username or password invalid' });
+  const { username, password } = req.body;
+  if (!username) {
+    return res.status(statusCode.BAD_REQUEST).json({ message: '"username" is required' });
+  }
+  if (!password) {
+    return res.status(statusCode.BAD_REQUEST).json({ message: '"password" is required' });
   }
   return next();
 };

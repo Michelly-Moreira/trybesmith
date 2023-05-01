@@ -37,13 +37,16 @@ export default class ProductService {
   }
 
   static validationProduct(product: Product): void | string {
-    let [valid, property] = this.validateProperties(product);
+    let [valid, property] = ProductService.validateProperties(product);
 
     if (!valid) {
-      return `O campo ${property} é obrigatório.`;
+      return `${property} is required`;
     }
 
-    [valid, property] = this.validateValues(product);
+    if (typeof valid !== 'string') {
+      return `${property} must be a string`;
+    }
+    [valid, property] = ProductService.validateValues(product);
 
     if (!valid) {
       return `O campo ${property} não pode ser nulo ou vazio.`;
@@ -54,7 +57,7 @@ export default class ProductService {
     const isValidProduct = ProductService.validationProduct(product);
     
     if (typeof isValidProduct === 'string') {
-    // throw new BadRequestError(isValidProduct);
+      // throw new BadRequestError(isValidProduct);
     }
     return this.model.create(product);
   }

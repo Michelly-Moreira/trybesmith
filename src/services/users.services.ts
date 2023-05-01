@@ -1,13 +1,8 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
-import { BadRequestError } from 'restify-errors';
 import User from '../interfaces/users.interface';
 import connection from '../models/connection';
 import UserModel from '../models/users.models';
 
-/* const httpErrGenerator = (status: number, message: string) => ({
-  status, message,
-}); */
-  
 const secretKey = process.env.JWT_SECRET || 'x';
 
 const configJWT = {
@@ -28,13 +23,11 @@ export default class UserService {
     return token;
   }
 
-  async signin(user: User): Promise<string> {
-    if (!user.username || !user.password) {
-      throw new BadRequestError('ANAUTHORIZED');
+  async signin(user: User): Promise<User | undefined > {
+    if (!user) {
+      throw Error('UNAUTHORIZED');
     }
-
-    await this.model.signin(user);
-    const token = jwt.sign(user, secretKey, configJWT);
-    return token;
+    const result = await this.model.signin(user);
+    return result;
   }
 }

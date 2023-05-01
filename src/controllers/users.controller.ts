@@ -1,13 +1,15 @@
 import { Request, Response } from 'express';
 import UserService from '../services/users.services';
 import statusCode from '../statusCode';
+import generateToken from '../auth';
 
-class UsersController {
+export default class UsersController {
   userService: UserService;
 
   constructor(userService = new UserService()) {
     this.userService = userService;
     this.createUser = this.createUser.bind(this);
+    this.signin = this.signin.bind(this);
   }
 
   async createUser(req: Request, res: Response): Promise<Response> {
@@ -16,26 +18,17 @@ class UsersController {
     return res.status(statusCode.CREATED).json({ token });
   }
 
-  async signin(req: Request, res: Response): Promise<Response> {
-    const user = req.body;
-    if (!user.username) {
-      return res.status(statusCode.BAD_REQUEST).json({
-        message: '"username" is required',
-      });
-    }
-    if (!user.password) {
-      return res.status(statusCode.BAD_REQUEST).json({
-        message: '"password" is required',
-      });
-    }
-    if (typeof user.username !== 'string' || typeof user.password !== 'string') {
+  async signin(req: Request, res: Response): Promise<void | Response> {
+    const data = req.body;
+    const user = await this.userService.signin(data);
+
+    // testando se o usuário e a senha contém no banco de dados
+    if (typeof user === 'undefined') {
       return res.status(statusCode.UNAUTHORIZED).json({
         message: 'Username or password invalid',
       });
     }
-    const token = await this.userService.signin(user);
+    const token = generateToken(Number(user.id));
     return res.status(statusCode.OK).json({ token });
   }
-} 
-
-export default UsersController;
+}
