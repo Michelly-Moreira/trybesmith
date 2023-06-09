@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { JsonWebTokenError } from 'jsonwebtoken';
 import statusCode from '../statusCode';
 
 const nameValidation = (req: Request, res: Response, next: NextFunction) => {
@@ -138,6 +139,37 @@ const loginValidation = (req: Request, res: Response, next: NextFunction) => {
   return next();
 };
 
+const tokenValidation = (req: Request, res: Response, next: NextFunction) => {
+  const { authorization } = req.header;
+  if (!authorization) {
+    return res.status(statusCode.UNAUTHORIZED).json({ message: 'Token not found' });
+  }
+  if (typeof authorization !== JsonWebTokenError) {
+    return res.status(statusCode.UNAUTHORIZED).json({ message: 'Invalid token' });
+  }
+  return next();
+};
+
+const productValidation = (req: Request, res: Response, next: NextFunction) => {
+  const { productsIds } = req.body;
+  if (typeof productsIds === 'undefined') {
+    return res.status(400).json({
+      message: '"productsIds" is required',
+    });
+  }
+  if (!Array.isArray(productsIds)) {
+    return res.status(422).json({
+      message: '"productsIds" must be an array',
+    });
+  }
+  if (productsIds.length < 1) {
+    return res.status(422).json({
+      message: '"productsIds" must include only numbers',
+    });
+  }
+  return next();
+};
+
 export {
   nameValidation,
   amountValidation,
@@ -146,4 +178,6 @@ export {
   levelValidation,
   passwordValidation,
   loginValidation,
+  tokenValidation,
+  productValidation,
 };
